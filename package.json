@@ -1,0 +1,20 @@
+{
+  "name": "javascript-coding-tasks",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "30 self-contained vanilla-JavaScript debugging/fixing tasks (L4) as an npm workspace — one install, 60 standalone apps (Vite for browser tasks, plain Node for the streams task).",
+  "workspaces": [
+    "*-Task",
+    "*-Solution"
+  ],
+  "scripts": {
+    "dev": "echo \"Run a single app: npm run dev -w 01-LoopVarClosure-Task   (or: cd 01-LoopVarClosure-Task && npm run dev)\" && exit 1",
+    "build:all": "node scripts/build-all.mjs",
+    "lint:all": "node scripts/lint-all.mjs",
+    "scaffold": "node scripts/scaffold.mjs"
+  },
+  "devDependencies": {
+    "vite": "^5.4.10"
+  }
+}
