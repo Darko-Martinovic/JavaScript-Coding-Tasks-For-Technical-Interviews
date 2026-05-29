@@ -38,8 +38,21 @@ app.innerHTML = `
     <h1>Countdown</h1>
     <ol id="list"></ol>
     <p>Seconds elapsed: <strong id="secs">0</strong></p>
-    <button id="restart">Restart</button>
-    <button id="reset">Reset</button>
+    <button id="restart">Restart countdown (re-run 1→5 + restart timer)</button>
+    <button id="reset">Reset (clear list + zero seconds)</button>
+
+    <section style="margin-top:20px; padding-top:12px; border-top:1px solid #ddd; font-size:13px; color:#555; max-width:560px;">
+      <p style="margin:0 0 6px;"><strong>Expected behavior:</strong></p>
+      <ul style="margin:0; padding-left:20px;">
+        <li>The list prints exactly <code>1, 2, 3, 4, 5</code> — one item per 100ms.</li>
+        <li><strong>Restart countdown</strong>: re-runs the 1→5 ticks and restarts the
+            seconds timer. There must only ever be <em>one</em> timer running, so the
+            counter ticks once per second — it must NOT accelerate after repeated clicks.</li>
+        <li><strong>Reset</strong>: clears the list and sets seconds back to 0 (the timer
+            keeps running). It must have exactly <em>one</em> click handler no matter how
+            many times you Restart — the Nth click must log "[reset] clicked" once, not N times.</li>
+      </ul>
+    </section>
   </main>
 `;
 
