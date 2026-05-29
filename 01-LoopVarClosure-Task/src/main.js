@@ -38,6 +38,7 @@ app.innerHTML = `
     <h1>Countdown</h1>
     <ol id="list"></ol>
     <p>Seconds elapsed: <strong id="secs">0</strong></p>
+    <p>Reset handler fired: <strong id="resetCount">0</strong> time(s) on the last click</p>
     <button id="restart">Restart countdown (re-run 1→5 + restart timer)</button>
     <button id="reset">Reset (clear list + zero seconds)</button>
 
@@ -58,8 +59,15 @@ app.innerHTML = `
 
 const list = document.getElementById('list');
 const secs = document.getElementById('secs');
+const resetCountEl = document.getElementById('resetCount');
 let intervalId;
 let elapsed = 0;
+
+// Instrumentation (NOT part of any bug): counts how many times the Reset
+// handler runs for a SINGLE click. Stacked listeners all receive the same
+// click event, so we dedupe on event.timeStamp to count per-click.
+let resetFires = 0;
+let lastResetStamp = -1;
 
 function start() {
   list.innerHTML = '';
@@ -85,8 +93,16 @@ function start() {
 
 function attachReset() {
   // BUG: a fresh listener is added every Restart. The handler stacks.
-  document.getElementById('reset').addEventListener('click', () => {
+  document.getElementById('reset').addEventListener('click', (e) => {
     console.log('[reset] clicked');
+    // Instrumentation: same click event hits every stacked listener, so reset
+    // the per-click tally when the timeStamp changes, then count this firing.
+    if (e.timeStamp !== lastResetStamp) {
+      lastResetStamp = e.timeStamp;
+      resetFires = 0;
+    }
+    resetFires += 1;
+    resetCountEl.textContent = String(resetFires);
     elapsed = 0;
     secs.textContent = '0';
     list.innerHTML = '';

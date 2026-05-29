@@ -13,6 +13,7 @@ app.innerHTML = `
     <h1>Countdown</h1>
     <ol id="list"></ol>
     <p>Seconds elapsed: <strong id="secs">0</strong></p>
+    <p>Reset handler fired: <strong id="resetCount">0</strong> time(s) on the last click</p>
     <button id="restart">Restart countdown (re-run 1→5 + restart timer)</button>
     <button id="reset">Reset (clear list + zero seconds)</button>
 
@@ -33,8 +34,16 @@ app.innerHTML = `
 
 const list = document.getElementById('list');
 const secs = document.getElementById('secs');
+const resetCountEl = document.getElementById('resetCount');
 let intervalId;
 let elapsed = 0;
+
+// Instrumentation (NOT part of any bug): counts how many times the Reset
+// handler runs for a SINGLE click. With the listener attached exactly once
+// (FIX #3) this always reads 1 — the per-click dedupe on event.timeStamp
+// mirrors the Task so the two screens look identical.
+let resetFires = 0;
+let lastResetStamp = -1;
 
 function start() {
   list.innerHTML = '';
@@ -64,8 +73,16 @@ function start() {
 // FIX #3: Attach the Reset listener exactly once, at module load. Calling it
 //         from inside start() (which runs on every Restart) was stacking a
 //         fresh handler each time so the Nth click logged N times.
-document.getElementById('reset').addEventListener('click', () => {
+document.getElementById('reset').addEventListener('click', (e) => {
   console.log('[reset] clicked');
+  // Instrumentation: per-click tally (resets on a new timeStamp). Only one
+  // listener exists, so this always shows 1 — contrast with the buggy Task.
+  if (e.timeStamp !== lastResetStamp) {
+    lastResetStamp = e.timeStamp;
+    resetFires = 0;
+  }
+  resetFires += 1;
+  resetCountEl.textContent = String(resetFires);
   elapsed = 0;
   secs.textContent = '0';
   list.innerHTML = '';
