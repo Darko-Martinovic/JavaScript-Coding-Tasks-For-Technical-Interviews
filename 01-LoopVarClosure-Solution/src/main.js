@@ -13,7 +13,7 @@ app.innerHTML = `
     <h1>Countdown</h1>
     <ol id="list"></ol>
     <p>Seconds elapsed: <strong id="secs">0</strong></p>
-    <p>Reset handler fired: <strong id="resetCount">0</strong> time(s) on the last click</p>
+    <p>Reset handlers that ran on the last <em>Reset</em> click: <strong id="resetCount">0</strong> <em>(expected: 1)</em></p>
     <button id="restart">Restart countdown (re-run 1→5 + restart timer)</button>
     <button id="reset">Reset (clear list + zero seconds)</button>
 
@@ -26,7 +26,9 @@ app.innerHTML = `
             counter ticks once per second — it must NOT accelerate after repeated clicks.</li>
         <li><strong>Reset</strong>: clears the list and sets seconds back to 0 (the timer
             keeps running). It must have exactly <em>one</em> click handler no matter how
-            many times you Restart — the Nth click must log "[reset] clicked" once, not N times.</li>
+            many times you Restart — so the "Reset handlers that ran on the last Reset click"
+            value above must always read <strong>1</strong> (and the console must log
+            "[reset] clicked" once per click, not N times).</li>
       </ul>
     </section>
   </main>
